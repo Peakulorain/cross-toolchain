@@ -214,10 +214,9 @@ You can see more in [cross-toolchain](<https://github.com/Peakulorain/cross-tool
 This project refers to many other people's practices. If there are infringements, please contact me. If you have any questions, welcome to communicate with me by Twitter or gmail.
 
 Twitter:
-![image](https://github.com/Peakulorain/cross-toolchain/blob/master/twitter.png)
+<img src="https://github.com/Peakulorain/cross-toolchain/blob/master/twitter.png"  width="600">
 
-G-mail:
-peakulorain@gmail.com
+G-mail:peakulorain@gmail.com
 
 ------
 
