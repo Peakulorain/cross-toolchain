@@ -201,18 +201,23 @@ cd $ROOT_DIR/Obj/build-gcc
 make -j4
 make install
 cd -
-
 ```
 
 At this point, the cross-toolchain was built entirely.
 
 ## Project Address
 
-You can see more in .
+You can see more in [cross-toolchain](<https://github.com/Peakulorain/cross-toolchain>).
 
 ## Others
 
-This project refers to many other people's practices. If there are infringements, please contact me. If you have any questions, welcome to communicate with me by 
+This project refers to many other people's practices. If there are infringements, please contact me. If you have any questions, welcome to communicate with me by Twitter or gmail.
+
+Twitter:
+![image](https://github.com/Peakulorain/cross-toolchain/blob/master/twitter.png)
+
+G-mail:
+peakulorain@gmail.com
 
 ------
 
