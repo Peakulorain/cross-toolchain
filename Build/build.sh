@@ -8,14 +8,24 @@ ROOT_DIR=`pwd`/..
 PREFIX=$ROOT_DIR/Install
 SYSROOT=$PREFIX/sysroot
 
-GMP=gmp-6.1.2
-MPFR=mpfr-4.0.2
-MPC=mpc-1.1.0
-ISL=isl-0.21
-BINUTILS=binutils-2.32
-KERNEL_HEADS=linux-4.4
-GCC=gcc-9.1.0
-GLIBC=glibc-2.28
+cd $ROOT_DIR/Source
+export gmp_var=`basename gmp-*`
+GMP=${gmp_var%%.tar.*}
+export mpfr_var=`basename mpfr-*`
+MPFR=${mpfr_var%%.tar.*}
+export mpc_var=`basename mpc-*`
+MPC=${mpc_var%%.tar.*}
+export isl_var=`basename isl-*`
+ISL=${isl_var%%.tar.*}
+export binutils_var=`basename binutils-*`
+BINUTILS=${binutils_var%%.tar.*}
+export linux_var=`basename linux-*`
+KERNEL_HEADS=${linux_var%%.tar.*}
+export gcc_var=`basename gcc-*`
+GCC=${gcc_var%%.tar.*}
+export glibc_var=`basename glibc-*`
+GLIBC=${glibc_var%%.tar.*}
+cd -
 
 BUILD=`gcc -dumpmachine`
 HOST=`gcc -dumpmachine`
@@ -45,7 +55,7 @@ cd -
 rm -rf $ROOT_DIR/Obj/build-isl
 mkdir -p $ROOT_DIR/Obj/build-isl
 cd $ROOT_DIR/Obj/build-isl
-CFLAGS="-O2 -I$PREFIX/host-lib/include -L$PREFIX/host-lib/lib" ../$ISL/configure --prefix=$PREFIX/host-lib --with-gmp=$PREFIX/host-lib --disable-shared
+CFLAGS="-O2 -I$PREFIX/host-lib/include -L$PREFIX/host-lib/lib" ../$ISL/configure --prefix=$PREFIX/host-lib --with-gmp-prefix=$PREFIX/host-lib --disable-shared
 make && make install
 cd -
 
@@ -78,6 +88,7 @@ cd -
 rm -rf $ROOT_DIR/Obj/build-glibc-head
 mkdir -p $ROOT_DIR/Obj/build-glibc-head
 cd $ROOT_DIR/Obj/build-glibc-head
+export PATH=$PATH:$PREFIX/bin/
 CC="$PREFIX/bin/$TARGET-gcc" \
 CFLAGS="-O2 -Wno-error -Wno-missing-attributes" \
 ../$GLIBC/configure --prefix=$SYSROOT/usr --build=$BUILD --host=$TARGET --target=$TARGET \
