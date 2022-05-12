@@ -44,14 +44,20 @@ if [ ! -f "binutils-2.38.tar.gz" ]; then
         exit 1
 fi
 
-wget https://mirrors.edge.kernel.org/pub/linux/kernel/v4.x/linux-4.19.209.tar.gz
-if [ ! -f "linux-4.19.209.tar.gz" ]; then
+#wget https://mirrors.edge.kernel.org/pub/linux/kernel/v4.x/linux-4.19.209.tar.gz
+#if [ ! -f "linux-4.19.209.tar.gz" ]; then
+#        echo "download link unavailable. please download linux kernel from other site."
+#        exit 1
+#fi
+
+wget https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.16.tar.gz
+if [ ! -f "linux-5.16.tar.gz" ]; then
         echo "download link unavailable. please download linux kernel from other site."
         exit 1
 fi
 
-wget https://ftp.gnu.org/gnu/glibc/glibc-2.35.tar.gz
-if [ ! -f "glibc-2.35.tar.gz" ]; then
+wget https://ftp.gnu.org/gnu/glibc/glibc-2.32.tar.gz
+if [ ! -f "glibc-2.32.tar.gz" ]; then
         echo "download link unavailable. please download glibc from other site."
         exit 1
 fi

@@ -29,7 +29,16 @@ cd -
 
 BUILD=`gcc -dumpmachine`
 HOST=`gcc -dumpmachine`
-TARGET=aarch64-linux
+target=riscv
+if [ "$target" = "arm" ]; then
+        TARGET=aarch64-linux
+        TARGET_ARCH=arm64
+elif [ "$target" = "riscv" ]; then
+	TARGET=riscv64-unknown-linux-gnu
+        TARGET_ARCH=riscv
+else
+	exit 0
+fi
 
 rm -rf $ROOT_DIR/Obj/build-gmp
 mkdir -p $ROOT_DIR/Obj/build-gmp
@@ -69,7 +78,7 @@ cd -
 rm -rf $ROOT_DIR/Obj/build-kernel
 mkdir -p $ROOT_DIR/Obj/build-kernel
 cd $ROOT_DIR/Obj/build-kernel
-make -C ../$KERNEL_HEADS ARCH=arm64 INSTALL_HDR_PATH=$SYSROOT/usr headers_install
+make -C ../$KERNEL_HEADS ARCH=$TARGET_ARCH INSTALL_HDR_PATH=$SYSROOT/usr headers_install
 cd -
 
 rm -rf $ROOT_DIR/Obj/build-gcc
@@ -88,7 +97,7 @@ cd -
 rm -rf $ROOT_DIR/Obj/build-glibc-head
 mkdir -p $ROOT_DIR/Obj/build-glibc-head
 cd $ROOT_DIR/Obj/build-glibc-head
-export PATH=$PATH:$PREFIX/bin/
+#export PATH=$PATH:$PREFIX/bin/
 CC="$PREFIX/bin/$TARGET-gcc" \
 CFLAGS="-O2 -Wno-error -Wno-missing-attributes" \
 ../$GLIBC/configure --prefix=$SYSROOT/usr --build=$BUILD --host=$TARGET --target=$TARGET \
@@ -112,8 +121,11 @@ rm -rf $ROOT_DIR/Obj/build-glibc
 mkdir -p $ROOT_DIR/Obj/build-glibc
 cd $ROOT_DIR/Obj/build-glibc
 CC="$PREFIX/bin/$TARGET-gcc" \
-CFLAGS="-O2 -Wno-error -Wno-missing-attributes" \
-../$GLIBC/configure --prefix=/usr --build=$BUILD --host=$TARGET --target=$TARGET \
+CXX="$PREFIX/bin/$TARGET-g++" \
+gcc="$PREFIX/bin/$TARGET-gcc" \
+CFLAGS="-O2 -Wno-error -Wno-missing-attributes -w" \
+CXXFLAGS="-O2 -Wno-error -Wno-missing-attributes -w" \
+../$GLIBC/configure --prefix=/usr --build=$BUILD --host=$TARGET --target=$TARGET  --with-sysroot=$SYSROOT \
         --with-headers=$SYSROOT/usr/include --disable-multilib libc_cv_forced_unwind=yes  --disable-compile-warnings libc_cv_c_cleanup=yes --disable-profile
 make -j4 
 make install_root=$SYSROOT install
