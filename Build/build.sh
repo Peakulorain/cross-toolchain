@@ -2,7 +2,7 @@
 
 set -e
 
-sh preprocess.sh
+#sh preprocess.sh
 
 ROOT_DIR=`pwd`/..
 PREFIX=$ROOT_DIR/Install
@@ -68,6 +68,17 @@ CFLAGS="-O2 -I$PREFIX/host-lib/include -L$PREFIX/host-lib/lib" ../$ISL/configure
 make && make install
 cd -
 
+##Build host texinfo
+rm -rf $ROOT_DIR/Obj/build-texinfo
+mkdir -p $ROOT_DIR/Obj/build-texinfo
+cd $ROOT_DIR/Obj/build-texinfo
+../$TEXINFO/configure --prefix=$PREFIX/host-lib/usr
+make -j && make install                                                                                                                                                              
+cd -
+
+##Use makeinfo
+export PATH=$PREFIX/host-lib/usr/bin:$PATH
+
 rm -rf $ROOT_DIR/Obj/build-binutils
 mkdir -p $ROOT_DIR/Obj/build-binutils
 cd $ROOT_DIR/Obj/build-binutils
@@ -99,7 +110,7 @@ mkdir -p $ROOT_DIR/Obj/build-glibc-head
 cd $ROOT_DIR/Obj/build-glibc-head
 #export PATH=$PATH:$PREFIX/bin/
 CC="$PREFIX/bin/$TARGET-gcc" \
-CFLAGS="-O2 -Wno-error -Wno-missing-attributes" \
+CFLAGS="-O2 -Wno-error -Wno-missing-attributes -w" \
 ../$GLIBC/configure --prefix=$SYSROOT/usr --build=$BUILD --host=$TARGET --target=$TARGET \
         --with-headers=$SYSROOT/usr/include --disable-multilib libc_cv_forced_unwind=yes  --disable-compile-warnings libc_cv_c_cleanup=yes --disable-profile 
 make install-bootstrap-headers=yes install-headers
