@@ -38,6 +38,13 @@ if [ ! -f "gcc-10.2.0.tar.gz" ]; then
         exit 1
 fi
 
+
+wget https://ftp.gnu.org/gnu/texinfo/texinfo-6.0.tar.gz
+if [ ! -f "texinfo-6.0.tar.gz" ]; then
+        echo "download link unavailable. please download texinfo from other site."
+        exit 1
+fi
+
 wget https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz
 if [ ! -f "binutils-2.38.tar.gz" ]; then
         echo "download link unavailable. please download binutils from other site."

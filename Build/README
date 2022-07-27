@@ -1,0 +1,12 @@
+1. Execute download.sh to download the source file
+  
+  sh download.sh
+
+2. Execute preprocess.sh to download build dependencies. Requires root privileges.
+
+  sh preprocess.sh
+
+3.Execute build.sh to complete the toolchain build.
+
+  sh build.sh 2>&1 | tee build.log
+
