@@ -25,6 +25,8 @@ export gcc_var=`basename gcc-*`
 GCC=${gcc_var%%.tar.*}
 export glibc_var=`basename glibc-*`
 GLIBC=${glibc_var%%.tar.*}
+export texinfo_var=`basename texinfo-*`
+TEXINFO=${texinfo_var%%.tar.*}
 cd -
 
 BUILD=`gcc -dumpmachine`
