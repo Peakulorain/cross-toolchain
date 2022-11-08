@@ -42,6 +42,7 @@ else
 	exit 0
 fi
 
+echo "-- build gmp ---"
 rm -rf $ROOT_DIR/Obj/build-gmp
 mkdir -p $ROOT_DIR/Obj/build-gmp
 cd $ROOT_DIR/Obj/build-gmp
@@ -49,27 +50,31 @@ cd $ROOT_DIR/Obj/build-gmp
 make -j && make install
 cd -
 
+echo "-- build mpfr ---"
 rm -rf $ROOT_DIR/Obj/build-mpfr
 mkdir -p $ROOT_DIR/Obj/build-mpfr
 cd $ROOT_DIR/Obj/build-mpfr
 ../$MPFR/configure --prefix=$PREFIX/host-lib --with-gmp=$PREFIX/host-lib --disable-shared
-make && make install
+make -j && make install
 cd -
 
+echo "-- build mpc ---"
 rm -rf $ROOT_DIR/Obj/build-mpc
 mkdir -p $ROOT_DIR/Obj/build-mpc
 cd $ROOT_DIR/Obj/build-mpc
 ../$MPC/configure --prefix=$PREFIX/host-lib --with-gmp=$PREFIX/host-lib --with-mpfr=$PREFIX/host-lib --disable-shared
-make && make install
+make -j && make install
 cd -
 
+echo "-- build isl ---"
 rm -rf $ROOT_DIR/Obj/build-isl
 mkdir -p $ROOT_DIR/Obj/build-isl
 cd $ROOT_DIR/Obj/build-isl
 CFLAGS="-O2 -I$PREFIX/host-lib/include -L$PREFIX/host-lib/lib" ../$ISL/configure --prefix=$PREFIX/host-lib --with-gmp-prefix=$PREFIX/host-lib --disable-shared
-make && make install
+make -j && make install
 cd -
 
+echo "-- build texinfo ---"
 ##Build host texinfo
 rm -rf $ROOT_DIR/Obj/build-texinfo
 mkdir -p $ROOT_DIR/Obj/build-texinfo
@@ -81,19 +86,22 @@ cd -
 ##Use makeinfo
 export PATH=$PREFIX/host-lib/usr/bin:$PATH
 
+echo "-- build binutils ---"
 rm -rf $ROOT_DIR/Obj/build-binutils
 mkdir -p $ROOT_DIR/Obj/build-binutils
 cd $ROOT_DIR/Obj/build-binutils
 ../$BINUTILS/configure --prefix=$PREFIX --build=$BUILD --host=$HOST --target=$TARGET 
-make && make install
+make -j && make install
 cd -
 
+echo "-- build kernel ---"
 rm -rf $ROOT_DIR/Obj/build-kernel
 mkdir -p $ROOT_DIR/Obj/build-kernel
 cd $ROOT_DIR/Obj/build-kernel
 make -C ../$KERNEL_HEADS ARCH=$TARGET_ARCH INSTALL_HDR_PATH=$SYSROOT/usr headers_install
 cd -
 
+echo "-- build gcc ---"
 rm -rf $ROOT_DIR/Obj/build-gcc
 mkdir -p $ROOT_DIR/Obj/build-gcc
 cd $ROOT_DIR/Obj/build-gcc
@@ -102,10 +110,11 @@ CXXFLAGS="-O2 -I$PREFIX/host-lib/include -L$PREFIX/host-lib/lib" \
 ../$GCC/configure --prefix=$PREFIX --build=$BUILD --host=$HOST --target=$TARGET --enable-languages=c,c++ --disable-multilib --disable-libsanitizer \
        --with-gmp=$PREFIX/host-lib --with-mpfr=$PREFIX/host-lib --with-mpc=$PREFIX/host-lib --with-isl=$PREFIX/host-lib \
        --with-sysroot=$SYSROOT --with-build-sysroot=$SYSROOT
-make CFLAGS_FOR_TARGET=--sysroot=$SYSROOT prefix=$PREFIX exec_prefix=$PREFIX -j4 all-gcc
+make CFLAGS_FOR_TARGET=--sysroot=$SYSROOT prefix=$PREFIX exec_prefix=$PREFIX -j64 all-gcc
 make install-gcc
 cd -
 
+echo "-- build c header files ---"
 #build  c header files
 rm -rf $ROOT_DIR/Obj/build-glibc-head
 mkdir -p $ROOT_DIR/Obj/build-glibc-head
@@ -123,12 +132,14 @@ $PREFIX/bin/$TARGET-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o $SYSRO
 touch $SYSROOT/usr/include/gnu/stubs.h
 cd -
 
+echo "-- build libgcc ---"
 #build target libgcc
 cd $ROOT_DIR/Obj/build-gcc
-make CFLAGS_FOR_TARGET=--sysroot=$SYSROOT prefix=$PREFIX exec_prefix=$PREFIX -j4 all-target-libgcc
+make CFLAGS_FOR_TARGET=--sysroot=$SYSROOT prefix=$PREFIX exec_prefix=$PREFIX -j64 all-target-libgcc
 make install-target-libgcc
 cd -
 
+echo "-- build c lib ---"
 #build standard c lib
 rm -rf $ROOT_DIR/Obj/build-glibc
 mkdir -p $ROOT_DIR/Obj/build-glibc
@@ -140,13 +151,14 @@ CFLAGS="-O2 -Wno-error -Wno-missing-attributes -w" \
 CXXFLAGS="-O2 -Wno-error -Wno-missing-attributes -w" \
 ../$GLIBC/configure --prefix=/usr --build=$BUILD --host=$TARGET --target=$TARGET  --with-sysroot=$SYSROOT \
         --with-headers=$SYSROOT/usr/include --disable-multilib libc_cv_forced_unwind=yes  --disable-compile-warnings libc_cv_c_cleanup=yes --disable-profile
-make -j4 
+make -j64
 make install_root=$SYSROOT install
 cd -
 
+echo "-- build libstdc++ ---"
 #build target libstdc++
 cd $ROOT_DIR/Obj/build-gcc
-make -j4 
+make -j64
 make install
 cd -
 
